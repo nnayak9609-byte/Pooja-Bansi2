@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Pooja Bansi - Study OS</title>
+
+<link rel="stylesheet" href="style.css">
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#0f172a">
+<link rel="icon" href="https://cdn-icons-png.flaticon.com/512/3135/3135715.png">
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<!-- ✅ FIXED FIREBASE VERSION (v8) -->
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+
+</head>
+
+<body>
+
+<header>
+<h2 id="rotaTitle">Rota 1 | Day 1: Active</h2>
+<p id="liveDate"></p>
+<p id="dailyQuote"></p>
+
+<h3 id="greeting">Good Morning Pooja 🌸</h3>
+
+<!-- STOPWATCH -->
+<div>
+<span id="stopwatch">00:00:00</span>
+<button onclick="toggleStopwatch()">Start</button>
+<button onclick="resetStopwatch()">Reset</button>
+</div>
+
+<!-- ALARM -->
+<div>
+<span id="alarmDisplay">--:--</span>
+<input type="time" id="alarmTime">
+<button onclick="setAlarm()">Set Alarm</button>
+<button onclick="stopAlarm()">Reset</button>
+</div>
+
+<!-- MUSIC -->
+<div>
+<select id="musicSelect">
+<option value="rain">🌧 Rain</option>
+<option value="white">🌊 White Noise</option>
+<option value="lofi">🎧 Lofi</option>
+</select>
+<button onclick="playMusic()">Play</button>
+<button onclick="pauseMusic()">Pause</button>
+</div>
+
+<button onclick="toggleTheme()">🌓 Toggle Theme</button>
+</header>
+
+<!-- LOGIN -->
+<div id="loginBox">
+<button onclick="googleLogin()">Login with Google</button>
+<button onclick="logout()">Logout</button>
+<p id="userInfo"></p>
+</div>
+
+<!-- ROTA (EXACT STRUCTURE) -->
+<div id="rotaBox">
+
+<div class="card">
+<h3>Morning D1</h3>
+<label><input type="checkbox" data-hours="3"> Office (3hrs) 3h</label><br>
+<label><input type="checkbox" data-hours="3"> Study 1 3h</label><br>
+<label><input type="checkbox" data-hours="1.5"> Study 2 1.5h</label>
+</div>
+
+<div class="card">
+<h3>Morning D2</h3>
+<label><input type="checkbox" data-hours="3"> Office (3hrs) 3h</label><br>
+<label><input type="checkbox" data-hours="3"> Study 1 3h</label><br>
+<label><input type="checkbox" data-hours="1.5"> Study 2 1.5h</label>
+</div>
+
+<div class="card">
+<h3>Evening D3</h3>
+<label><input type="checkbox" data-hours="2.5"> Study 1 2.5h</label><br>
+<label><input type="checkbox" data-hours="3.5"> Study 2 3.5h</label><br>
+<label><input type="checkbox" data-hours="3"> Office (3hrs) 3h</label>
+</div>
+
+<div class="card">
+<h3>Evening D4</h3>
+<label><input type="checkbox" data-hours="2.5"> Study 1 2.5h</label><br>
+<label><input type="checkbox" data-hours="3.5"> Study 2 3.5h</label><br>
+<label><input type="checkbox" data-hours="3"> Office (3hrs) 3h</label>
+</div>
+
+<div class="card">
+<h3>Night 1</h3>
+<label><input type="checkbox" data-hours="2.5"> Study 1 2.5h</label><br>
+<label><input type="checkbox" data-hours="4.5"> Study 2 4.5h</label><br>
+<label><input type="checkbox" data-hours="3"> Office (3hrs) 3h</label>
+</div>
+
+<div class="card">
+<h3>Night 2</h3>
+<label><input type="checkbox" data-hours="3"> Study 1 3h</label><br>
+<label><input type="checkbox" data-hours="2.5"> Study 2 2.5h</label><br>
+<label><input type="checkbox" data-hours="3"> Office (3hrs) 3h</label>
+</div>
+
+<div class="card">
+<h3>Off Day</h3>
+<label><input type="checkbox" data-hours="3"> Study 1 3h</label><br>
+<label><input type="checkbox" data-hours="2.5"> Study 2 2.5h</label>
+</div>
+
+<div class="card">
+<h3>General</h3>
+<label><input type="checkbox" data-hours="3"> Study 1 3h</label><br>
+<label><input type="checkbox" data-hours="3.5"> Study 2 3.5h</label>
+</div>
+
+</div>
+
+<!-- TARGET -->
+<section>
+<h3>🎯 Next Day Strategy & Checklist</h3>
+<input id="targetInput" placeholder="Add a target for tomorrow...">
+<button onclick="addTarget()">Add Target</button>
+<ul id="targets"></ul>
+</section>
+
+<!-- PROGRESS -->
+<section>
+<h3>Total Rota Progress: <span id="total">0</span> hrs</h3>
+<button onclick="exportCSV()">📊 EXPORT CSV</button>
+<button onclick="exportFullData()">💾 BACKUP</button>
+<input type="file" id="importFile">
+<button onclick="importData()">IMPORT</button>
+<button onclick="window.print()">🖨 PRINT PDF</button>
+</section>
+
+<!-- CHART -->
+<canvas id="chart"></canvas>
+
+<!-- INSTALL -->
+<button onclick="installApp()">📱 Install App</button>
+
+<!-- AUDIO -->
+<audio id="rain" src="https://www.soundjay.com/nature/rain-01.mp3"></audio>
+<audio id="white" src="https://www.soundjay.com/ambience/white-noise-01.mp3"></audio>
+<audio id="lofi" src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"></audio>
+<audio id="alarmSound" src="https://actions.google.com/sounds/v1/alarms/alarm_clock.ogg"></audio>
+
+<script src="script.js"></script>
+
+</body>
+</html>
